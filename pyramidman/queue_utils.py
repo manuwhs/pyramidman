@@ -12,7 +12,7 @@ from speech_recognition import WaitTimeoutError
 
 from .audio_parameters import AudioParameters
 from .utils import int_or_str
-
+from .listener import listen
 
 def record_with_queue(audio_params: AudioParameters, filename: str):
     """Records audio using the parameters in AudioParameters.
@@ -84,7 +84,7 @@ def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=Non
             while running[0]:
                 try:  # listen for 1 second, then check again if the stop function has been called
                     # print("Listening")
-                    audio = r.listen(s, timeout, phrase_time_limit)
+                    audio = listen(r, s, timeout, phrase_time_limit)
                     # print("Stop listening")
 
                     if running[0]:

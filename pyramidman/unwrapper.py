@@ -1,5 +1,4 @@
-""" Library containing all the data structures
-
+"""  Unwrapping of objects for accessing their information quickly
 """
 import pandas as pd
 from enum import Enum
@@ -121,7 +120,7 @@ class Node():
         return text
 
 
-def unwrap(obj, name="object", ignore_classes=[]):
+def unwrap(obj, name="object", ignore_classes=[], max_level = 10):
     text = ""
     stack = []
 
@@ -131,7 +130,8 @@ def unwrap(obj, name="object", ignore_classes=[]):
         node = stack.pop(-1)
 #        print("--------------------------")
 #        print (node.obj)
-        stack.extend(node.get_children())
+        if node.level < max_level:
+            stack.extend(node.get_children())
 
         if (is_basic(node.obj) == False):
             text += node.print_obj_string() + "\n"

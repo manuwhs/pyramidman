@@ -94,18 +94,6 @@ def listen(r: sr.Recognizer, source: sr.Microphone,
     elapsed_time = 0  # number of seconds of audio read
     buffer = b""  # an empty buffer means that the stream has ended and there is no data left to read
 
-    ## Empty the buffer first
-    source.stream.pyaudio_stream.get_read_available()
-
-    while True:
-        available_bits = source.stream.pyaudio_stream.get_read_available()
-        ns = int(source.SAMPLE_RATE * 0.1)
-        n_read = len(source.stream.read(ns))
-        
-        print(ns,n_read, available_bits)
-        if(available_bits < source.CHUNK):
-            break
-    source.stream.pyaudio_stream.start_stream
     while True:
         frames = collections.deque()
 

@@ -72,3 +72,18 @@ def stereo_to_mono(signal):
             if signal.shape[1] == 2:
                 signal = (signal[:, 1] / 2) + (signal[:, 0] / 2)
     return signal
+
+
+def empty_stream(source):
+    ## Empty the buffer first
+    source.stream.pyaudio_stream.get_read_available()
+
+    while True:
+        available_bits = source.stream.pyaudio_stream.get_read_available()
+        ns = int(source.SAMPLE_RATE * 0.1)
+        n_read = len(source.stream.read(ns))
+        
+        print("Samples to read:", ns, "Bytes read: ", n_read, "Available bits: ", available_bits)
+        if(available_bits < source.CHUNK):
+            break
+    
