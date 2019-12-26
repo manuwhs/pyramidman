@@ -1,21 +1,17 @@
-from .audio_parameters import AudioParameters
-import argparse
-import tempfile
+
 import queue
 import sys
-from .utils import  int_or_str
-import sounddevice as sd
-import soundfile as sf
+import tempfile
+import threading
 
 import numpy  # Make sure NumPy is loaded before it is used in the callback
-
-
-import threading
-from speech_recognition import WaitTimeoutError
-import queue
-
-
+import sounddevice as sd
+import soundfile as sf
 import speech_recognition as sr
+from speech_recognition import WaitTimeoutError
+
+from .audio_parameters import AudioParameters
+from .utils import int_or_str
 
 
 def record_with_queue(audio_params: AudioParameters, filename: str):
@@ -109,3 +105,4 @@ def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=Non
     listener_thread.start()
 
     return stopper
+

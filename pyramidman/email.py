@@ -65,11 +65,11 @@ class Email():
     def add_HTML(self, html_text):
         add_HMTL(self.msgRoot, html_text)
 
-    def add_image(self, filedir, inline=1):
-        add_image(self.msgRoot, filedir, inline)
+    def add_image(self, filepath, inline=1):
+        add_image(self.msgRoot, filepath, inline)
 
-    def add_file(self, filedir, filename=""):
-        add_file(self.msgRoot, filedir, filename)
+    def add_file(self, filepath):
+        add_file(self.msgRoot, filepath)
 
     def send_email(self, recipients=""):
         self.set_recipients(recipients)
@@ -114,12 +114,11 @@ def add_HMTL(msgRoot, html_text):
     msgRoot.attach(msgAlternative)
 
 
-def add_file(msgRoot, filedir, filename=""):
+def add_file(msgRoot, filepath):
     """Ataches any file to our mail
     """
-    path = filedir
-    if(len(filename) == 0):
-        filename = filedir.split("/")[-1]
+    path = filepath
+    filename = filepath.split("/")[-1]
 
     # Guess the content type based on the file's extension.  Encoding
     # will be ignored, although we should check for simple things like
@@ -153,24 +152,24 @@ def add_file(msgRoot, filedir, filename=""):
     msgRoot.attach(msg)
 
 
-def add_image(msgRoot, filedir, inline=1):
+def add_image(msgRoot, filepath, inline=1):
     """This function adds an image to the main message of the email
     msgRoot: It is the main message
-    filedir: It is where the image is.
+    filepath: It is where the image is.
     If attached == 1, then we put it as attached, if not, we put it in the
     real email.
     """
 
-    filename = filedir.split("/")[-1]
+    filename = filepath.split("/")[-1]
     if(len(filename) == 0):
-        filename = filedir
+        filename = filepath
 
     if (inline == 1):
         text = '<br>  <img src="cid:' + filename + '" style="width:700px">'
         add_HMTL(msgRoot, text)
         print(text)
 
-    add_file(msgRoot, filedir)
+    add_file(msgRoot, filepath)
 
 
 def send_email(user, pwd, recipient, msgRoot, secure=0):
