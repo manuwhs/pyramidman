@@ -7,7 +7,9 @@ Returns:
 import pyaudio
 import sounddevice as sd
 import speech_recognition as sr
+import time 
 
+sr.Recognizer.record
 
 def get_microphone_info(index: int):
     """Returns the information of the given microphone index.
@@ -49,14 +51,18 @@ def get_sysdefault_microphone_index():
     return None
 
 
-def calibrate_microphone(mic: sr.Microphone, r: sr.Recognizer, duration = 5, dynamic_energy_threshold=True):
+def calibrate_microphone(mic: sr.Microphone, r: sr.Recognizer, duration = 5, warmup_duration = 0):
+
     print(f"Calibrating microphone for {duration} seconds.")
     with mic as source:
+        if warmup_duration > 0:
+            time.sleep(warmup_duration)
+            empty_stream(source, time_step = 0.1)
+            
         # listen for "duration" seconds and create the ambient noise energy level
         r.adjust_for_ambient_noise(source, duration=duration)
-        r.dynamic_energy_threshold = dynamic_energy_threshold
 
-    print("Calibrated")
+    print("Calibrated energy threshold: ", r.energy_threshold)
 
 
 def stereo_to_mono(signal):
@@ -74,16 +80,17 @@ def stereo_to_mono(signal):
     return signal
 
 
-def empty_stream(source):
-    ## Empty the buffer first
+def empty_stream(source, time_step = 0.1):
+    """ Empties the buffer of the stream by continuously reading it until it is empty.
+    """
     source.stream.pyaudio_stream.get_read_available()
 
     while True:
         available_bits = source.stream.pyaudio_stream.get_read_available()
-        ns = int(source.SAMPLE_RATE * 0.1)
+        ns = int(source.SAMPLE_RATE * time_step)
         n_read = len(source.stream.read(ns))
         
-        print("Samples to read:", ns, "Bytes read: ", n_read, "Available bits: ", available_bits)
+        # print("Samples to read:", ns, "Bytes read: ", n_read, "Available bits: ", available_bits)
         if(available_bits < source.CHUNK):
             break
     

@@ -32,24 +32,23 @@ class Papyrus():
         # Hardcoded param:
         self.logo_filepath = "../img/pyramidman_logo2.png"
 
-    def add_table_from_df(self, df):
+    def add_table_from_df(self, df, style = "Colorful Grid Accent 2"):
         """It creates and adds a table to the document from a pandas table
         """
         nrows, ncols = df.shape
         columns = df.columns.values
-        table = self.document.add_table(rows=nrows+1, cols=ncols)
+        table = self.document.add_table(rows=nrows+1, cols=ncols, style = style)
 
         header_cells = table.rows[0].cells
         i = 0
         for col in columns:
-            header_cells[i] = col
+            header_cells[i].text = col
             i += 1
 
         for i in range(nrows):
-            row_cells = table.add_row().cells
-
+            row_cells = table.rows[i+1].cells
             for j in range(ncols):
-                row_cells[j].text = str(df.iloc[i][columns[i]])
+                row_cells[j].text = str(df.iloc[i][columns[j]])
 
     def add_first_page(self):
 
@@ -108,6 +107,11 @@ class Papyrus():
         ############ SECOND PAGE: Cleaning Process Report #########
         document.add_heading('Cleaning Report', level=1)
 
+        df = pd.DataFrame()
+        df["hello"] = [1, "hello", [2,3]]
+        df["second"] = [2,1,1]
+
+        self.add_table_from_df(df)
         # Save document in the end
         document.save(filepath)
         os.system("chmod 777 " + filepath)

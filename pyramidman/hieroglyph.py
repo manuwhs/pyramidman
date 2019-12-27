@@ -3,7 +3,6 @@ import plotly.graph_objs as go
 import numpy as np
 from typing import List
 
-
 def plot_timeseries_range_slider(x, y, title):
     """It plots a timeseries of the given data, and includes a slider.
 
