@@ -55,7 +55,8 @@ def pause_counter(r, buffer, source):
 
 
 def listen(r: sr.Recognizer, source: sr.Microphone,
-           timeout=None, phrase_time_limit=None):
+           timeout=None, phrase_time_limit=None, 
+           chunk_preprocessing = lambda x: x):
     
     
     """
@@ -106,6 +107,7 @@ def listen(r: sr.Recognizer, source: sr.Microphone,
             if len(buffer) == 0:
                 break  # reached end of the stream (we process it fa)
 
+            buffer = chunk_preprocessing(buffer)
             # Add the time to the acculated time and append the new data to the accumulation
             elapsed_time += seconds_per_buffer
             frames.append(buffer)
@@ -128,6 +130,7 @@ def listen(r: sr.Recognizer, source: sr.Microphone,
             buffer = source.stream.read(source.CHUNK)
             if len(buffer) == 0:
                 break  # reached end of the stream
+            buffer = chunk_preprocessing(buffer)
             elapsed_time += seconds_per_buffer
             phrase_count += 1
             frames.append(buffer)

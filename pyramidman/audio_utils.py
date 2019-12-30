@@ -8,8 +8,7 @@ import pyaudio
 import sounddevice as sd
 import speech_recognition as sr
 import time 
-
-sr.Recognizer.record
+import numpy as np
 
 def get_microphone_info(index: int):
     """Returns the information of the given microphone index.
@@ -93,4 +92,16 @@ def empty_stream(source, time_step = 0.1):
         # print("Samples to read:", ns, "Bytes read: ", n_read, "Available bits: ", available_bits)
         if(available_bits < source.CHUNK):
             break
+
+def sample_noise(audio_params, r, source, duration = 1, warmup = 2):
+    """ This function returns the """
     
+    with source as source:
+        audio = r.record(source, duration = duration, offset = warmup)
+       
+    data = np.frombuffer(audio.frame_data, np.int16).astype(float)
+    # select section of data that is noise
+    initial_noise_duration = 1
+    noise_data = data[:int(audio_params.sample_rate/initial_noise_duration)]
+
+    return noise_data

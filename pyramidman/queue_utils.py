@@ -14,6 +14,7 @@ from .audio_parameters import AudioParameters
 from .utils import int_or_str
 from .listener import listen
 
+
 def record_with_queue(audio_params: AudioParameters, filename: str):
     """Records audio using the parameters in AudioParameters.
     It saves it in the file specified in filename. It stops recording when stopped.
@@ -64,7 +65,8 @@ def put_audio_data_in_queue_callback_closure(recognizer: sr.Recognizer, audio: s
     return put_audio_data_in_queue_callback
 
 
-def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=None, timeout=2):
+def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=None, timeout=2,
+                       chunk_preprocessing=lambda x: x):
     """
     Spawns a thread to repeatedly record phrases from ``source`` (an ``AudioSource`` instance) into an ``AudioData`` instance and call ``callback`` with that ``AudioData`` instance as soon as each phrase are detected.
     Returns a function object that, when called, requests that the background listener thread stop. The background thread is a daemon and will not stop the program from exiting if there are no other non-daemon threads. The function accepts one parameter, ``wait_for_stop``: if truthy, the function will wait for the background listener to stop before returning, otherwise it will return immediately and the background listener thread might still be running for a second or two afterwards. Additionally, if you are using a truthy value for ``wait_for_stop``, you must call the function from the same thread you originally called ``listen_in_background`` from.
@@ -74,8 +76,8 @@ def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=Non
     running = [True]
 
     def threaded_listen():
-        """This thread will contantly used the blocking function to listen in the micropohone 
-        There is only one thread that listens all the time. 
+        """This thread will contantly used the blocking function to listen in the micropohone
+        There is only one thread that listens all the time.
 
         Yo creo que se cala porque hay otros eventos de exception que no estamos contemplando y se ca
         Lo que pasaba era que lo imprimia en otras celdas porque soy un puto idiota.
@@ -84,7 +86,8 @@ def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=Non
             while running[0]:
                 try:  # listen for 1 second, then check again if the stop function has been called
                     # print("Listening")
-                    audio = listen(r, s, timeout, phrase_time_limit)
+                    audio = listen(
+                        r, s, timeout, phrase_time_limit, chunk_preprocessing)
                     # print("Stop listening")
 
                     if running[0]:
@@ -105,4 +108,3 @@ def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=Non
     listener_thread.start()
 
     return stopper
-
