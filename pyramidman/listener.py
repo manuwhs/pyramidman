@@ -5,6 +5,7 @@ import math
 import speech_recognition as sr
 from speech_recognition import WaitTimeoutError
 
+
 def is_timeout_expired(timeout, elapsed_time):
     # handle waiting too long for phrase by raising an exception
     if timeout and elapsed_time > timeout:
@@ -13,11 +14,11 @@ def is_timeout_expired(timeout, elapsed_time):
 
 
 def is_speaking_detected(r, source, buffer):
-        # detect whether speaking has started on audio input
-        # energy of the audio signal
-
-        # Compute the root of the mean power of the signal.
-        # This is the mean power of the buffer so far.
+        """ detect whether speaking has started on audio input
+        energy of the audio signal
+        Compute the root of the mean power of the signal.
+        This is the mean power of the buffer so far.
+        """
     energy = audioop.rms(buffer, source.SAMPLE_WIDTH)
     return energy > r.energy_threshold
 
@@ -55,10 +56,8 @@ def pause_counter(r, buffer, source):
 
 
 def listen(r: sr.Recognizer, source: sr.Microphone,
-           timeout=None, phrase_time_limit=None, 
-           chunk_preprocessing = lambda x: x):
-    
-    
+           timeout=None, phrase_time_limit=None,
+           chunk_preprocessing=lambda x: x):
     """
     Blocking function 
 
