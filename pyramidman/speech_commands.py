@@ -29,7 +29,6 @@ def play_generic_sentence(audio_params, folder="../audios/temp/"):
 
 
 class SpeechCommandsHandler():
-
     def __init__(self, mode = "active"):
         self.keyword = "pyramid man"
         self.mode = mode    # "silent"
@@ -54,6 +53,7 @@ class SpeechCommandsHandler():
 
     def process(self, sentence):
         if self.mode == "active":
+            print("processing ", sentence)
             if self.is_keyword_detected(sentence):
                 print("keyword detected")
                 for command in self.commands:

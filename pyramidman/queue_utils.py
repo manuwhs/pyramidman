@@ -51,24 +51,24 @@ def record_with_queue(audio_params: AudioParameters, filename: str):
         print('\nRecording finished: ')
 
 
-def put_audio_data_in_queue_callback_closure(recognizer: sr.Recognizer, audio: sr.AudioData, q: queue.Queue):
+def put_data_in_queue_closure(q: queue.Queue, processing=lambda x: x):
     """ Closure that generates a function that puts the audio data in the desired queue.
+    It accepts a function to be applied to the data.
     """
-
-    def put_audio_data_in_queue_callback(recognizer: sr.Recognizer, audio: sr.AudioData):
+    def put_data_in_queue_callback(data):
         """
         This function receives the audio from the recognizer and puts it inside a queue
         to be processed by another thread.
         """
-        q.put(audio)
+        q.put(processing(data))
 
-    return put_audio_data_in_queue_callback
+    return put_data_in_queue_callback
 
 
 def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=None, timeout=2,
                        chunk_preprocessing=lambda x: x):
     """
-    Spawns a thread to repeatedly record phrases from ``source`` (an ``AudioSource`` instance) into an ``AudioData`` instance and call ``callback`` with that ``AudioData`` instance as soon as each phrase are detected.
+    Spawns a thread to repeatedly record phrases fro[summary]m ``source`` (an ``AudioSource`` instance) into an ``AudioData`` instance and call ``callback`` with that ``AudioData`` instance as soon as each phrase are detected.
     Returns a function object that, when called, requests that the background listener thread stop. The background thread is a daemon and will not stop the program from exiting if there are no other non-daemon threads. The function accepts one parameter, ``wait_for_stop``: if truthy, the function will wait for the background listener to stop before returning, otherwise it will return immediately and the background listener thread might still be running for a second or two afterwards. Additionally, if you are using a truthy value for ``wait_for_stop``, you must call the function from the same thread you originally called ``listen_in_background`` from.
     Phrase recognition uses the exact same mechanism as ``recognizer_instance.listen(source)``. The ``phrase_time_limit`` parameter works in the same way as the ``phrase_time_limit`` parameter for ``recognizer_instance.listen(source)``, as well.
     The ``callback`` parameter is a function that should accept two parameters - the ``recognizer_instance``, and an ``AudioData`` instance representing the captured audio. Note that ``callback`` function will be called from a non-main thread.
@@ -91,7 +91,7 @@ def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=Non
                     # print("Stop listening")
 
                     if running[0]:
-                        callback(r, audio)
+                        callback(audio)
 
                 except WaitTimeoutError:  # listening timed out, just try again
                     pass
@@ -107,4 +107,33 @@ def listen_in_a_thread(r: sr.Recognizer, source, callback, phrase_time_limit=Non
     listener_thread.daemon = True
     listener_thread.start()
 
+    return stopper
+
+
+def consumer_process_in_thread(input_queue, callback, timeout = 3):
+    """
+    Creates a thread that reads from a queue, performs an operation on the data from the queue 
+    """
+    running = [True]
+
+    def threaded_process():
+        """[summary]
+        """
+        while running[0]:
+            try:
+                data = input_queue.get()
+                if running[0]:
+                    callback(data)
+            except queue.Empty:
+                pass
+
+    def stopper(wait_for_stop=True):
+        running[0] = False
+        if wait_for_stop:
+            # block until the background thread is done, which can take around 1 second
+            processing_thread.join()
+
+    processing_thread = threading.Thread(target=threaded_process)
+    processing_thread.daemon = True
+    processing_thread.start()
     return stopper

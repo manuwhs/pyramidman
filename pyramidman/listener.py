@@ -14,11 +14,11 @@ def is_timeout_expired(timeout, elapsed_time):
 
 
 def is_speaking_detected(r, source, buffer):
-        """ detect whether speaking has started on audio input
-        energy of the audio signal
-        Compute the root of the mean power of the signal.
-        This is the mean power of the buffer so far.
-        """
+    """ detect whether speaking has started on audio input
+    energy of the audio signal
+    Compute the root of the mean power of the signal.
+    This is the mean power of the buffer so far.
+    """
     energy = audioop.rms(buffer, source.SAMPLE_WIDTH)
     return energy > r.energy_threshold
 

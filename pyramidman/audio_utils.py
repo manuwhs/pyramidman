@@ -1,7 +1,4 @@
 """A set of utilities to handle audio.
-
-Returns:
-    [type] -- [description]
 """
 
 import pyaudio
@@ -14,7 +11,7 @@ import numpy as np
 def get_microphone_info(index: int):
     """Returns the information of the given microphone index.
     """
-    return sd.query_deinitial_noise_durationvices(index, 'input')
+    return sd.query_devices(index, 'input')
 
 
 def get_available_microphones() -> dict:
@@ -107,3 +104,16 @@ def sample_noise(audio_params, r, source, duration=1, warmup=2):
     noise_data = data[-int(audio_params.sample_rate*duration):]
 
     return noise_data
+
+def print_recognizer_parameters(r):
+    # Maximum number of seconds of non-speaking seconds before and after the audio
+    print("non_speaking_duration: ", r.non_speaking_duration)
+
+    # Number of non-speaking seconds to be considered end of sentence.
+    print("pause_threshold: ", r.pause_threshold)
+
+    # Minimum number of seconds of a sentence.
+    print("phrase_threshold: ", r.phrase_threshold)
+
+    # The amount of energy in 
+    print("energy_threshold: ", r.energy_threshold)
