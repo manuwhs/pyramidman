@@ -32,6 +32,12 @@ class Papyrus():
         # Hardcoded param:
         self.logo_filepath = "../img/pyramidman_logo2.png"
 
+    def set_transcription(self, transcription):
+        """Sets the transcription of the minutes and its summary
+        """
+        self.transcription = transcription
+        self.transcription_summary = transcription
+
     def add_table_from_df(self, df, style = "Colorful Grid Accent 2"):
         """It creates and adds a table to the document from a pandas table
         """
@@ -65,7 +71,7 @@ class Papyrus():
         text = self.title + " "
         p.add_run(text).bold = True
 
-        text = "carried on the day "
+        text = " carried on the day "
         p.add_run(text)
         initial_text = str(self.date) + " "
         p.add_run(initial_text).bold = True
@@ -79,7 +85,19 @@ class Papyrus():
 
         p.add_run(text)
 
+        self.document.add_heading('Summary ', level=1)
+
+        text = self.transcription_summary
+        p.add_run(text)
+
         self.document.add_page_break()
+
+    def add_second_page(self):
+        self.document.add_heading('Transcript ', level=1)
+        p = self.document.add_paragraph()
+        text = self.transcription
+        p.add_run(text)
+
 
     def create_document(self, filepath='presentation.docx'):
         # This function will create the document, assuming all the data is loaded
@@ -87,31 +105,9 @@ class Papyrus():
         # Create word document
         document = Document()
         self.document = document
-        
         self.add_first_page()
-        # Create Initial text describing the document
+        self.add_second_page()
 
-#        document.add_paragraph(
-#            'first item in unordered list', style='ListBullet'
-#        )
-#        document.add_paragraph(
-#            'first item in ordered list', style='ListNumber'
-#        )
-
-        ############ Summary of the cleaning #########
-        # State how the process went in general, like
-        """
-        Duration, did it meet the FDA requirements ? Warnings issued ? 
-        """
-
-        ############ SECOND PAGE: Cleaning Process Report #########
-        document.add_heading('Cleaning Report', level=1)
-
-        df = pd.DataFrame()
-        df["hello"] = [1, "hello", [2,3]]
-        df["second"] = [2,1,1]
-
-        self.add_table_from_df(df)
         # Save document in the end
         document.save(filepath)
         os.system("chmod 777 " + filepath)

@@ -14,12 +14,12 @@ from email.mime.text import MIMEText
 
 class EmailConfig():
     def __init__(self):
-        self.user = "iotubes.dk@gmail.com"
-        self.pwd = "Iotubes1"
+        self.user = "pyramidman.damvad@gmail.com"
+        self.pwd = "howdoesitscale"
 
         self.recipients = ["manuwhs@gmail.com"]
 
-        self.subject = "[Thesis] Results from execution"
+        self.subject = "[Meeting] Report of meeting"
         self.body = ""
 
 class Email():

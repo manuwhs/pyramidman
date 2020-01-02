@@ -1,13 +1,20 @@
 
 from random import randint
-from .basic_audio_IO import play_audio  
-from .utils import  get_folder_files
+from .basic_audio_IO import play_audio
+from .utils import get_folder_files
 from .audio_parameters import AudioParameters
+from pyramidman.Thoth import Papyrus
+from pyramidman.email import Email, EmailConfig
+
 
 def process_command(command):
     function = command["function"]
     args = command["args"]
-    function(*args)
+
+    if args is None:
+        function()
+    else:
+        function(*args)
 
 
 def is_command_detected(command, sentence):
@@ -19,17 +26,8 @@ def is_command_detected(command, sentence):
     return False
 
 
-def play_generic_sentence(audio_params, folder="../audios/temp/"):
-    """Plays a .wav file from the given folder, selected at random.
-    """
-    print("playing")
-    files_in_folder = get_folder_files(folder)
-    file_to_play = folder + files_in_folder[randint(0, len(files_in_folder))]
-    play_audio(audio_params, file_to_play)
-
-
 class SpeechCommandsHandler():
-    def __init__(self, mode = "active"):
+    def __init__(self, mode="active"):
         self.keyword = "pyramid man"
         self.mode = mode    # "silent"
         self.commands = []
@@ -62,3 +60,14 @@ class SpeechCommandsHandler():
                         process_command(command)
 
 
+""" Commands my friend!
+"""
+
+
+def play_generic_sentence(audio_params, folder="../audios/temp/"):
+    """Plays a .wav file from the given folder, selected at random.
+    """
+    print("playing")
+    files_in_folder = get_folder_files(folder)
+    file_to_play = folder + files_in_folder[randint(0, len(files_in_folder))]
+    play_audio(audio_params, file_to_play)
