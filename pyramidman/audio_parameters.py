@@ -4,7 +4,7 @@ from .audio_utils import get_sysdefault_microphone_index, get_microphone_info
 
 class AudioParameters:
     def __init__(self):
-        self.chunk = 1024  # Record in chunks of 1024 samples
+        self.chunk = 1024*4  # Record in chunks of 1024 samples
         self.sample_format = pyaudio.paInt16  # 16 bits per sample
         self.subtype = None  # subtype = "PCM_24". Not needed in most cases
         self.channels = 1

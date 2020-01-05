@@ -101,11 +101,12 @@ class VersionAction(argparse.Action):
         exit(0)
 
 
-def transcribe(args, filepath="audio/2830-3980-0043.wav", verbose=0):
+def transcribe(args, filepath="", verbose=0):
 
     if verbose > 0:
         print('Loading model from file {}'.format(args.model), file=sys.stderr)
         model_load_start = timer()
+
     ds = Model(args.model, args.beam_width)
     if verbose > 0:
         model_load_end = timer() - model_load_start

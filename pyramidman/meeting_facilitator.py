@@ -10,8 +10,8 @@ from typing import List
 
 class MeetingFacilitator():
     """Class to handle the logic of meeting facilitation.
-    It basically initializes some basic information about the meeting, and then 
-    - It starts the listening in a new thread. 
+    It basically initializes some basic information about the meeting, and then
+    - It starts the listening in a new thread.
     - The sentences recorded are then transcribed by another thread.
     - If an event is triggered: (i.e command or long silence), another thread is created to handle it.
     """
@@ -57,8 +57,10 @@ class MeetingFacilitator():
     def set_email_config(self, email_config):
         self.email_config = email_config
 
+    """ Starting Actions"""
+
     def start_command_handler_in_thread(self):
-        """Creates a consumer thread that reads in the transcriptions and executes the 
+        """Creates a consumer thread that reads in the transcriptions and executes the
         corresponding commands
         """
         def command_consumer(x):
@@ -69,17 +71,17 @@ class MeetingFacilitator():
         self._is_handling_commands = True
 
     def stop_command_handler_in_thread(self):
-        """Creates a consumer thread that reads in the transcriptions and executes the 
+        """Creates a consumer thread that reads in the transcriptions and executes the
         corresponding commands
         """
         self._stop_command_handler_in_background_func()
         self._is_handling_commands = False
 
     def start(self):
-        """It starts listening and transcribing 
+        """It starts listening and transcribing
         """
         self.transcriber.start_listening_in_background(
-            phrase_time_limit=30, timeout=0)
+            phrase_time_limit=15, timeout=0)
         self.transcriber.start_transcribing_in_background()
         self.start_command_handler_in_thread()
 

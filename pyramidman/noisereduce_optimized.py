@@ -1,6 +1,6 @@
 from noisereduce.noisereduce import *
 from noisereduce.noisereduce import _amp_to_db, _stft, _smoothing_filter, _istft
-
+import numpy as np
 
 def noise_STFT_and_statistics(
         noise_clip,
@@ -151,13 +151,17 @@ def reduce_noise_optimized_closure(noise_clip=None,
                                    use_tensorflow=False):
 
     def reduce_noise_optimized_closurized(audio_clip):
-        return reduce_noise_optimized(audio_clip, noise_clip, precomputed_noise_parameters, n_grad_freq, n_grad_time,
-                                      n_fft,
-                                      win_length,
-                                      hop_length,
-                                      n_std_thresh,
-                                      prop_decrease,
-                                      pad_clipping,
-                                      use_tensorflow)
+        # print("preprocessing")
+        audio_clip = np.frombuffer(audio_clip, np.int16)
+        audio_clip = audio_clip.astype(np.float)
+        processed_audio = reduce_noise_optimized(audio_clip, noise_clip, precomputed_noise_parameters, n_grad_freq, n_grad_time,
+                                                 n_fft,
+                                                 win_length,
+                                                 hop_length,
+                                                 n_std_thresh,
+                                                 prop_decrease,
+                                                 pad_clipping,
+                                                 use_tensorflow)
+        return processed_audio.astype(np.int16).tobytes()
 
     return reduce_noise_optimized_closurized

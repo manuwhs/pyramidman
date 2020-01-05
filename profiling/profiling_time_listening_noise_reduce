@@ -1,0 +1,105 @@
+Timer unit: 1e-06 s
+
+Total time: 5.14238 s
+File: /home/montoya/Desktop/VScode/pyramidman/pyramidman/listener.py
+Function: listen at line 58
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    58                                           def listen(r: sr.Recognizer, source: sr.Microphone,
+    59                                                      timeout=None, phrase_time_limit=None,
+    60                                                      chunk_preprocessing=lambda x: x):
+    61                                               """
+    62                                               Blocking function 
+    63                                           
+    64                                               Records a single phrase from ``source`` (an ``AudioSource`` instance) into an ``AudioData`` instance, which it returns.
+    65                                           
+    66                                               This is done by waiting until the audio has an energy above ``recognizer_instance.energy_threshold`` (the user has started speaking), and then recording until it encounters ``recognizer_instance.pause_threshold`` seconds of non-speaking or there is no more audio input. The ending silence is not included.
+    67                                           
+    68                                               The ``timeout`` parameter is the maximum number of seconds that this will wait for a phrase to start before giving up and throwing an ``speech_recognition.WaitTimeoutError`` exception. If ``timeout`` is ``None``, there will be no wait timeout.
+    69                                           
+    70                                               The ``phrase_time_limit`` parameter is the maximum number of seconds that this will allow a phrase to continue before stopping and returning the part of the phrase processed before the time limit was reached. The resulting audio will be the phrase cut off at the time limit. If ``phrase_timeout`` is ``None``, there will be no phrase time limit.
+    71                                           
+    72                                               This operation will always complete within ``timeout + phrase_timeout`` seconds if both are numbers, either by returning the audio data, or by raising a ``speech_recognition.WaitTimeoutError`` exception.
+    73                                               """
+    74         1          7.0      7.0      0.0      assert isinstance(source, sr.AudioSource), "Source must be an audio source"
+    75         1          4.0      4.0      0.0      assert source.stream is not None, "Audio source must be entered before listening, see documentation for ``AudioSource``; are you using ``source`` outside of a ``with`` statement?"
+    76         1          5.0      5.0      0.0      assert r.pause_threshold >= r.non_speaking_duration >= 0
+    77                                           
+    78                                               # A buffer is one of the chunks
+    79         1          6.0      6.0      0.0      seconds_per_buffer = float(source.CHUNK) / source.SAMPLE_RATE
+    80                                           
+    81                                               # Number of buffers (chunks) of non-speaking audio during a phrase,
+    82                                               # before the phrase should be considered complete.
+    83         1          8.0      8.0      0.0      pause_buffer_count = int(math.ceil(r.pause_threshold / seconds_per_buffer))
+    84                                           
+    85                                               # minimum number of buffers of speaking audio before we consider the speaking audio a phrase
+    86         1          3.0      3.0      0.0      phrase_buffer_count = int(
+    87         1          6.0      6.0      0.0          math.ceil(r.phrase_threshold / seconds_per_buffer))
+    88                                           
+    89                                               # maximum number of buffers of non-speaking audio to retain before and after a phrase
+    90         1          3.0      3.0      0.0      non_speaking_buffer_count = int(
+    91         1          5.0      5.0      0.0          math.ceil(r.non_speaking_duration / seconds_per_buffer))
+    92                                           
+    93                                               # read audio input for phrases until there is a phrase that is long enough
+    94         1          3.0      3.0      0.0      elapsed_time = 0  # number of seconds of audio read
+    95         1          3.0      3.0      0.0      buffer = b""  # an empty buffer means that the stream has ended and there is no data left to read
+    96                                           
+    97         1          3.0      3.0      0.0      while True:
+    98         1          5.0      5.0      0.0          frames = collections.deque()
+    99                                           
+   100                                                   # store audio input until the phrase starts
+   101         1          3.0      3.0      0.0          while True:
+   102                                                       # Read the data from the buffer.
+   103                                                       # It needs to be read in blocking mode apparently.
+   104                                                       # Maybe the micro puts the data all the time in a buffer and we read from it.
+   105         1      85437.0  85437.0      1.7              buffer = source.stream.read(source.CHUNK)
+   106         1          8.0      8.0      0.0              if len(buffer) == 0:
+   107                                                           break  # reached end of the stream (we process it fa)
+   108                                           
+   109         1       8157.0   8157.0      0.2              buffer = chunk_preprocessing(buffer)
+   110                                                       # Add the time to the acculated time and append the new data to the accumulation
+   111         1          3.0      3.0      0.0              elapsed_time += seconds_per_buffer
+   112         1          2.0      2.0      0.0              frames.append(buffer)
+   113                                           
+   114         1          3.0      3.0      0.0              is_timeout_expired(timeout, elapsed_time)
+   115                                           
+   116                                                       # ensure we only keep the needed amount of non-speaking buffers
+   117         1          2.0      2.0      0.0              if len(frames) > non_speaking_buffer_count:
+   118                                                           frames.popleft()
+   119         1         14.0     14.0      0.0              if is_speaking_detected(r, source, buffer):
+   120         1          2.0      2.0      0.0                  break
+   121                                                       if r.dynamic_energy_threshold:
+   122                                                           update_energy_threshold(r, source, buffer, seconds_per_buffer)
+   123                                           
+   124                                                   # read audio input until the phrase ends
+   125         1          1.0      1.0      0.0          pause_count, phrase_count = 0, 0
+   126         1          1.0      1.0      0.0          phrase_start_time = elapsed_time
+   127                                           
+   128         1          1.0      1.0      0.0          while True:
+   129        59    4125855.0  69929.7     80.2              buffer = source.stream.read(source.CHUNK)
+   130        59        649.0     11.0      0.0              if len(buffer) == 0:
+   131                                                           break  # reached end of the stream
+   132        59     919244.0  15580.4     17.9              buffer = chunk_preprocessing(buffer)
+   133        59        310.0      5.3      0.0              elapsed_time += seconds_per_buffer
+   134        59        160.0      2.7      0.0              phrase_count += 1
+   135        59        202.0      3.4      0.0              frames.append(buffer)
+   136                                           
+   137        59        227.0      3.8      0.0              if phrase_time_limit and elapsed_time - phrase_start_time > phrase_time_limit:
+   138         1          5.0      5.0      0.0                  break
+   139        58       1656.0     28.6      0.0              pause_count = pause_counter(r, buffer, source)
+   140                                           
+   141        58        142.0      2.4      0.0              if pause_count > pause_buffer_count:
+   142                                                           break
+   143                                           
+   144                                                   # check how long the detected phrase is, and retry listening if the phrase is too short
+   145         1          5.0      5.0      0.0          phrase_count -= pause_count  # exclude the buffers for the pause before the phrase
+   146         1          4.0      4.0      0.0          if phrase_count >= phrase_buffer_count or len(buffer) == 0:
+   147         1          3.0      3.0      0.0              break  # phrase is long enough or we've reached the end of the stream, so stop listening
+   148                                           
+   149                                               # obtain frame data
+   150         1         10.0     10.0      0.0      for i in range(pause_count - non_speaking_buffer_count):
+   151                                                   frames.pop()  # remove extra non-speaking frames at the end
+   152         1        190.0    190.0      0.0      frame_data = b"".join(frames)
+   153                                           
+   154         1         28.0     28.0      0.0      return sr.AudioData(frame_data, source.SAMPLE_RATE, source.SAMPLE_WIDTH)

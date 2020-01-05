@@ -23,12 +23,12 @@ def is_command_detected(command, sentence):
         if index_start_command >= 0:
             return index_start_command
 
-    return False
+    return -1
 
 
 class SpeechCommandsHandler():
     def __init__(self, mode="active"):
-        self.keyword = "pyramid man"
+        self.keyword = "my"
         self.mode = mode    # "silent"
         self.commands = []
         self.add_custom_commands()
@@ -45,17 +45,17 @@ class SpeechCommandsHandler():
 
     def is_keyword_detected(self, sentence):
         index_start_keyword = sentence.find(self.keyword)
-        if index_start_keyword > 0:
+        if index_start_keyword >= 0:
             return index_start_keyword
-        return False
+        return -1
 
     def process(self, sentence):
         if self.mode == "active":
             print("processing ", sentence)
-            if self.is_keyword_detected(sentence):
+            if self.is_keyword_detected(sentence) > -1:
                 print("keyword detected")
                 for command in self.commands:
-                    if is_command_detected(command, sentence):
+                    if is_command_detected(command, sentence) > -1:
                         # TODO: Create thread and put the sentence there.
                         process_command(command)
 

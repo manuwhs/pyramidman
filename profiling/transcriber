@@ -1,0 +1,38 @@
+Timer unit: 1e-06 s
+
+Total time: 8.85456 s
+File: /home/montoya/Desktop/VScode/pyramidman/pyramidman/Seshat.py
+Function: transcribe at line 145
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   145                                               def transcribe(self, audio, child_process=False):
+   146                                                   """This function just transcribes what is being given as input
+   147                                                   """
+   148         1          3.0      3.0      0.0          if child_process:
+   149                                                       def transcriber_write_result_dict(queue):
+   150                                                           #print(result)
+   151                                                           audio = queue.get()
+   152                                                           #print(audio)
+   153                                                           play_audio(self.audio_params, audio)
+   154                                                           re = self.transcriber(audio)
+   155                                                           queue.put(re)
+   156                                                           #print(result)
+   157                                           
+   158                                           
+   159                                                       if __name__ == 'pyramidman.Seshat':
+   160                                                           ctx =  mp.get_context("spawn")
+   161                                                           ctx = mp
+   162                                           
+   163                                                           queue = ctx.Queue()
+   164                                                           #mp.set_start_method('spawn')
+   165                                                           queue.put(audio)
+   166                                                           p = ctx.Process(target=transcriber_write_result_dict,
+   167                                                                       args=(queue,))
+   168                                                           p.start()
+   169                                                           time.sleep(5)
+   170                                                           #p.join()
+   171                                                           result = 3 # queue.get()
+   172                                                       return result
+   173                                                   else:
+   174         1    8854561.0 8854561.0    100.0              return self.transcriber(audio)
