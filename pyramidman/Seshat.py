@@ -9,15 +9,18 @@ from .noisereduce_optimized import noise_STFT_and_statistics, reduce_noise_optim
 import multiprocessing as mp
 import time
 from .unwrapper import unwrap
-from .subprocess import   call_subprocess
+from .signal_processing import butter_highpass_filter
+from .subprocess import call_subprocess
+import numpy as np
 #import ray
 
-#ray.init()
+# ray.init()
 
-import json 
+import json
 
 
 from .basic_audio_IO import play_audio
+
 
 class Transcriber:
     """Class that transcribes the information.
@@ -107,6 +110,17 @@ class Transcriber:
                                                                            use_tensorflow)
         self.audio_filter = reduce_noise_optimized_closurized
 
+    def set_automatic_high_pass_filter(self):
+
+        def filter(data):
+            data = np.frombuffer(data, np.int16)
+            data = data.astype(np.float)
+            data_filtered = butter_highpass_filter(
+                data, 50, self.audio_params.sample_rate, 5)
+            return data_filtered.astype(np.int16).tobytes()
+
+        self.audio_filter = filter
+
     def set_automatic_default_transcribing_variables(self):
         # Set everything automatically
         args = DeepSpeechArgs()
@@ -151,7 +165,7 @@ class Transcriber:
     def is_transcribing(self):
         return self._transcribing
 
-    def transcribe(self, audio, child_process=True):
+    def transcribe(self, audio, child_process=False):
         """This function just transcribes what is being given as input
         """
 
@@ -168,7 +182,6 @@ class Transcriber:
         #         re = self.transcriber(audio)
         #         queue.put(re)
         #         #print(result)
-
 
         #     if __name__ == 'pyramidman.Seshat':
         #         ctx =  mp.get_context("spawn")
@@ -187,7 +200,8 @@ class Transcriber:
 
         if child_process:
             code_file = "../scripts/transcriber.py"
-            output, error, return_code = call_subprocess(f"python {code_file} --audio {audio}")
+            output, error, return_code = call_subprocess(
+                f"python {code_file} --audio {audio}")
             result = json.loads(output)
             return result
         else:

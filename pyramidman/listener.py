@@ -5,6 +5,7 @@ import math
 import speech_recognition as sr
 from speech_recognition import WaitTimeoutError
 
+import datetime as dt 
 
 def is_timeout_expired(timeout, elapsed_time):
     # handle waiting too long for phrase by raising an exception
@@ -104,6 +105,7 @@ def listen(r: sr.Recognizer, source: sr.Microphone,
             # Maybe the micro puts the data all the time in a buffer and we read from it.
             buffer = source.stream.read(source.CHUNK)
             if len(buffer) == 0:
+                t_start = dt.datetime.now()
                 break  # reached end of the stream (we process it fa)
 
             buffer = chunk_preprocessing(buffer)
@@ -117,6 +119,7 @@ def listen(r: sr.Recognizer, source: sr.Microphone,
             if len(frames) > non_speaking_buffer_count:
                 frames.popleft()
             if is_speaking_detected(r, source, buffer):
+                t_start = dt.datetime.now()
                 break
             if r.dynamic_energy_threshold:
                 update_energy_threshold(r, source, buffer, seconds_per_buffer)

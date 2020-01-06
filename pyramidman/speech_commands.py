@@ -28,7 +28,7 @@ def is_command_detected(command, sentence):
 
 class SpeechCommandsHandler():
     def __init__(self, mode="active"):
-        self.keyword = "my"
+        self.keyword = "egypt"
         self.mode = mode    # "silent"
         self.commands = []
         self.add_custom_commands()
@@ -38,7 +38,7 @@ class SpeechCommandsHandler():
 
     def add_custom_commands(self):
         music_player = {"name": "music_player",
-                        "sentences": ["play music"],
+                        "sentences": ["facilitate"],
                         "function": play_generic_sentence,
                         "args": [AudioParameters()]}
         self.add_command(music_player)
@@ -64,10 +64,10 @@ class SpeechCommandsHandler():
 """
 
 
-def play_generic_sentence(audio_params, folder="../audios/temp/"):
+def play_generic_sentence(audio_params, folder="../audios/meeting_facilitation/"):
     """Plays a .wav file from the given folder, selected at random.
     """
     print("playing")
     files_in_folder = get_folder_files(folder)
-    file_to_play = folder + files_in_folder[randint(0, len(files_in_folder))]
+    file_to_play = folder + files_in_folder[randint(0, len(files_in_folder)-1)]
     play_audio(audio_params, file_to_play)

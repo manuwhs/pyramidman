@@ -28,7 +28,7 @@ class MeetingFacilitator():
         self.attendants = attendants
 
         self.audios_folder = "../meetings/" + meeting_name + "/audios/"
-        self.reports_folder = "..meetings/" + meeting_name + "/reports/"
+        self.reports_folder = "../meetings/" + meeting_name + "/reports/"
 
         create_folder_if_needed(self.reports_folder)
         create_folder_if_needed(self.audios_folder)
@@ -47,6 +47,16 @@ class MeetingFacilitator():
         transcriber.set_automatic_default_recording_variables(
             recordings_folder=self.audios_folder)
         transcriber.set_automatic_default_transcribing_variables()
+
+        transcriber.set_automatic_high_pass_filter()
+        transcriber.recognizer.dynamic_energy_threshold = False
+        transcriber.recognizer.energy_threshold*=1.2
+    
+        transcriber.pause_threshold = 1.0
+        transcriber.phrase_threshold = 0.3
+        transcriber.non_speaking_duration = 0.8
+
+
         self.transcriber = transcriber
 
     def set_default_speech_command_handler(self):
@@ -115,11 +125,19 @@ class MeetingFacilitator():
     def process_transcriptions(self):
         """Process the transcriptions and creates a joint document. It basically joins the words
         and hopefully adds commas and dots properly (and uppercases) properly.
+
+        We can write it properly according to times:
+        - short sentences -> coma
+        - long sentence -> finish with .
+        - long silence -> New line
+        - Remove intelligle based on confidence or content.
         """
 
         all_text = ""
         for transcription in self._trainscriptions_list:
-            all_text += transcription["sentence"].capitalize() + "."
+            if (transcription["sentence"]!= "i") and (transcription["sentence"]!="a"):
+
+                all_text += transcription["sentence"].capitalize() + ". "
 
         return all_text
 
