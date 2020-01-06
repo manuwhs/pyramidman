@@ -16,3 +16,4 @@
 .pytest_cache/
 /audios/temp/*
 /models/*
+/meetings/
