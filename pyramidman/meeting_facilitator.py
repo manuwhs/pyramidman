@@ -2,11 +2,11 @@ from .Seshat import Transcriber
 from .speech_commands import SpeechCommandsHandler
 from .queue_utils import consumer_process_in_thread
 from .utils import create_folder_if_needed
-from pyramidman.Thoth import Papyrus
-from pyramidman.email import Email, EmailConfig
+from .Thoth import Papyrus
+from .email import Email, EmailConfig
 import datetime as dt
 from typing import List
-
+from .utils import generate_word_cloud_image
 
 class MeetingFacilitator():
     """Class to handle the logic of meeting facilitation.
@@ -21,11 +21,12 @@ class MeetingFacilitator():
         self.meeting_name = meeting_name
 
         if date is None:
-            self.date = str(dt.datetime.now())
+            self.date = str(dt.date.today())
         else:
             self.date = date
 
         self.attendants = attendants
+        self.attendants = ["Slott", "Jess", "Freja", "Emil", "Sugar"]
 
         self.audios_folder = "../meetings/" + meeting_name + "/audios/"
         self.reports_folder = "../meetings/" + meeting_name + "/reports/"
@@ -107,9 +108,21 @@ class MeetingFacilitator():
         email = Email(email_config.user, email_config.pwd,
                       email_config.recipients)
         email.create_msgRoot(subject=email_config.subject)
+
+        text = "Dear Egyptian, <br><br>"
+        text += "In this email you will find an attached document containing a summary and transcription of the meeting " + self.meeting_name + "<br><br>"
+        text += "Stay awesome!"
+        email_config.body = text
         email.add_HTML(email_config.body)
 
+        # Generate wordcloud image
+        input_image = "../img/pyramidman_logo.jpg"
+        output_image = self.reports_folder + "word_cloud.jpg"
+        transcription = self.process_transcriptions()
+        generate_word_cloud_image(input_image,transcription, output_image)
+
         self.make_report()
+        email.add_image(output_image)
         email.add_file(self.reports_folder + "report.docx")
 
         email.send_email()
@@ -120,6 +133,7 @@ class MeetingFacilitator():
 
         transcription = self.process_transcriptions()
         papyrus.set_transcription(transcription)
+        papyrus.word_cloud_image_path = self.reports_folder + "word_cloud.jpg"
         papyrus.create_document(self.reports_folder + "report.docx")
 
     def process_transcriptions(self):
@@ -140,6 +154,7 @@ class MeetingFacilitator():
                 all_text += transcription["sentence"].capitalize() + ". "
 
         return all_text
+
 
     def add_meeting_commands_handlers(self):
 

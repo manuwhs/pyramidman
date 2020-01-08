@@ -12,7 +12,7 @@
 /images/
 /data/
 .vscode/
-/notebooks/.ipnb_checkpoints/
+/notebooks/.ipynb_checkpoints/
 .pytest_cache/
 /audios/temp/*
 /models/*

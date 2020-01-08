@@ -24,9 +24,10 @@ from .basic_audio_IO import play_audio
 
 class Transcriber:
     """Class that transcribes the information.
-    It constains all the information necesary to listen to sentences 
-    and store them in a queue, and transcribe them and make the transcriptions
-    available.
+    It constains all the information necessary to listen to sentences 
+    and store them in a queue in a separate thread.  
+    It also creates another thread that transcribes them and puts them in
+    another queue to be later processed.
     """
 
     def __init__(self):

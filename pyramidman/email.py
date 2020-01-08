@@ -17,7 +17,7 @@ class EmailConfig():
         self.user = "pyramidman.damvad@gmail.com"
         self.pwd = "howdoesitscale"
 
-        self.recipients = ["manuwhs@gmail.com"]
+        self.recipients = ["manuwhs@gmail.com","nreusch1997@gmail.com"]
 
         self.subject = "[Meeting] Report of meeting"
         self.body = ""

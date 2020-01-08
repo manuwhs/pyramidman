@@ -5,6 +5,7 @@ from docx.shared import Inches
 import pandas as pd
 import datetime as dt
 import os
+import gensim
 
 from typing import List
 # Creare new Word Document
@@ -20,7 +21,7 @@ class Papyrus():
         self.title = title
         self.report_type = report_type
         if date is None:
-            self.date = str(dt.datetime.now())
+            self.date = str(dt.date.today())
         else:
             self.date = date
 
@@ -32,11 +33,14 @@ class Papyrus():
         # Hardcoded param:
         self.logo_filepath = "../img/pyramidman_logo2.png"
 
+    def summarize(self,text):
+        return gensim.summarization.summarizer.summarize(text, word_count = 80)
+
     def set_transcription(self, transcription):
         """Sets the transcription of the minutes and its summary
         """
         self.transcription = transcription
-        self.transcription_summary = transcription
+        self.transcription_summary = self.summarize(transcription)
 
     def add_table_from_df(self, df, style = "Colorful Grid Accent 2"):
         """It creates and adds a table to the document from a pandas table
@@ -61,22 +65,25 @@ class Papyrus():
         ######################## FIRST PAGE #####################
         # Add pyramidman logo
         self.document.add_picture(self.logo_filepath, width=Inches(3.0))
-        self.document.add_heading('Meeting ', level=0)
+        self.document.add_heading('Meeting:  ' + self.title, level=0)
 
         p = self.document.add_paragraph()
 
         # Now we add different texts of the first paragraph.
-        text = 'This document contains the information regarding the meeting'
+        text = 'This document contains a summary and transcription of the meeting '
         p.add_run(text)
         text = self.title + " "
         p.add_run(text).bold = True
 
-        text = " carried on the day "
+        text = "\nMeeting Date: "
+        p.add_run(text).bold = True
+        text = str(self.date) + " "
         p.add_run(text)
-        initial_text = str(self.date) + " "
-        p.add_run(initial_text).bold = True
 
-        text = "The attendants to the meeting were: "
+        text = "\nAttendants: "
+        p.add_run(text).bold = True
+        text = ""
+        
         if self.attendants is not None:
             for i in range(len(self.attendants)):
                 text += self.attendants[i]
@@ -86,10 +93,11 @@ class Papyrus():
         p.add_run(text)
 
         self.document.add_heading('Summary ', level=1)
-
+        p = self.document.add_paragraph()
         text = self.transcription_summary
         p.add_run(text)
 
+        self.document.add_picture(self.word_cloud_image_path, width=Inches(3.0))
         self.document.add_page_break()
 
     def add_second_page(self):
