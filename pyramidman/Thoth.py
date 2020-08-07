@@ -1,6 +1,8 @@
 
 from docx import Document
 from docx.shared import Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+
 
 import pandas as pd
 import datetime as dt
@@ -98,6 +100,8 @@ class Papyrus():
         p.add_run(text)
 
         self.document.add_picture(self.word_cloud_image_path, width=Inches(3.0))
+        last_paragraph = self.document.paragraphs[-1] 
+        last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         self.document.add_page_break()
 
     def add_second_page(self):

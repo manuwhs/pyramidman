@@ -28,7 +28,7 @@ def is_command_detected(command, sentence):
 
 class SpeechCommandsHandler():
     def __init__(self, mode="active"):
-        self.keyword = "egypt"
+        self.keyword = "a"
         self.mode = mode    # "silent"
         self.commands = []
         self.add_custom_commands()
@@ -51,9 +51,8 @@ class SpeechCommandsHandler():
 
     def process(self, sentence):
         if self.mode == "active":
-            print("processing ", sentence)
+            print(sentence.capitalize() + ". ", end = "")
             if self.is_keyword_detected(sentence) > -1:
-                print("keyword detected")
                 for command in self.commands:
                     if is_command_detected(command, sentence) > -1:
                         # TODO: Create thread and put the sentence there.
@@ -67,7 +66,6 @@ class SpeechCommandsHandler():
 def play_generic_sentence(audio_params, folder="../audios/meeting_facilitation/"):
     """Plays a .wav file from the given folder, selected at random.
     """
-    print("playing")
     files_in_folder = get_folder_files(folder)
     file_to_play = folder + files_in_folder[randint(0, len(files_in_folder)-1)]
     play_audio(audio_params, file_to_play)

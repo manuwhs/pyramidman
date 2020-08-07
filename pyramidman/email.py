@@ -17,8 +17,7 @@ class EmailConfig():
         self.user = "pyramidman.damvad@gmail.com"
         self.pwd = "howdoesitscale"
 
-        self.recipients = ["manuwhs@gmail.com","nreusch1997@gmail.com"]
-
+        self.recipients = ["manuwhs@gmail.com"]
         self.subject = "[Meeting] Report of meeting"
         self.body = ""
 
@@ -165,9 +164,9 @@ def add_image(msgRoot, filepath, inline=1):
         filename = filepath
 
     if (inline == 1):
-        text = '<br>  <img src="cid:' + filename + '" style="width:700px">'
+        text = '<br>  <center> <img src="cid:' + filename + '" style="width:500px"> </center>'
         add_HMTL(msgRoot, text)
-        print(text)
+        #print(text)
 
     add_file(msgRoot, filepath)
 

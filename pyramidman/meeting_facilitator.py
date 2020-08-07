@@ -26,7 +26,7 @@ class MeetingFacilitator():
             self.date = date
 
         self.attendants = attendants
-        self.attendants = ["Slott", "Jess", "Freja", "Emil", "Sugar"]
+        self.attendants = ["Janina"]
 
         self.audios_folder = "../meetings/" + meeting_name + "/audios/"
         self.reports_folder = "../meetings/" + meeting_name + "/reports/"
@@ -119,6 +119,48 @@ class MeetingFacilitator():
         input_image = "../img/pyramidman_logo.jpg"
         output_image = self.reports_folder + "word_cloud.jpg"
         transcription = self.process_transcriptions()
+
+        transcription = """
+Thank you everyone for coming here, my name is Manuel, and I have  the humongous pleasure to present to you, for the first time ever, pyramidman. This is a story about civilization, about evolution, but before we proceed.
+        
+I am sorry already because I am going to radically change your perception of pyramids. But before we introduce what pyramidman is all about, lets think for a second what do pyramids represent in society. Pyramids represent civilization, they represent structure, and most importantly, they represent hierarchy. From Mathematics to Humanities. Going through Gastronomy and Society structures. From Religion to World Domination. Ok, those two are very similar, I could have just said religion. And last but not least, the backbone of our Economic system, pyramid schemes.
+        
+As we all know, humankind has gone a long way. From the banana tree monkey to the computer monkey. Well diversity has grown a bit, there are two types of computer monkey, Office package monkey and programming monkey. In the early stages, we lived in hunter-gatherer societies. Every individual contributed with their hard skills equally, with hands on skills such as hunting, cooking, nursing…
+
+Over time, as groups grew in size, more complex civilizations appeared, which allowed for specialization of jobs that had not to so much with surviving.
+People created well defined Gods and huge infrastructures to please them. But there was another element that is missing from this picture which connected the Populus and the Gods.
+
+The element that made people work like slaves to build the pyramids. Was it belief? Nope, it was middle management. Throughout the ages, the labour became less about physical work and more about mental capabilities. And the middle management evolved accordingly.
+
+Becoming what we see today, a two sided individual that looks cool to the team 
+while reporting everything upstarts and making sure the executive boards plans are carried out, waterfall style.
+
+What is the next step? Well, if it wasn’t obvious yet, the next step is pyramidman. pyramidman stands for python robot advisor for middle management. Like any other sotfware, It is just a “tool” to enhance and increase the effectivity of a given sector, in this case middle management.
+Completely not intended to replace them in the long run.  
+
+pyramidman is an AI powered middle management tool based on the latest technologies that we all perfectly understand: Python, Deep learning and Blockchain.
+
+Lets have a look at its features. Starting by minutes taking, pyramidman listens to the conversation, and writes it down. At the end of the meeting: It makes a summary and sends it by email. When it listens the magic words.
+
+pyramidman also does meeting facilitation, it sparks the conversation towards value creation. It waits for silences and asks the right questions (every time): How does it scale? Are we asking the right questions? How do we measure success? Is this aligned with our customer journey? Can we take a step back? Are we conflating two different issues here?
+
+pyramidman has programmable voice commands. Forget about Alexa and Google who monitor you and analyze everything you say 24/7. And they can only tell you the weather and play music. With pyramidman you can customize your own voice commands. i.e: pyramidman facilitate meeting
+
+pyramidman also does business talk translation, keep up with the latest business slang.  There is so much potential here means You guys did an awful job and that is why you need us. As per my last email is read the fuck*** thread
+Our strategy is to increase our revenue streams and cut down our costs. We have no idea why benefits are down, some people might get fired. Thank you for your input, we will take it into account. Shut up and look pretty We leverage on the opportunities of market arbitrage. We take advantage of poorer countries.  Leveraging versatile skills in analytics, statistics, business, and economics for data driven insights is Bullshit.
+
+pyramidman is your own business advisor, walking you through ten cases.
+Pretty much like AI dungeon with business baby steps. 
+
+pyramidman includes innovation mode a.k.a brainstorming. Store all the ideas in the cloud using Blockchain with your company copyright. Optional:  Online bot that will track the original owner for life. If they developed on an idea remotely close, it prepares an automatic lawsuit.
+
+pyramidman detects its own sentences and assigns pyramid-points to the speakers. Handy when you need to promote some employee. Failing upwards had never been this easy!
+
+is this a joke? Why did you spend so much time on this stupid presentation? Well maybe, or maybe... is this a github repo? Recording studio? And most importantly, is it on right now? pyramidman facilitate.
+
+Well, this presentation is almost over and as I said, pyramidman sends an email at the end of the meeting when it hears the magic words. Who wants coffee?
+
+        """
         generate_word_cloud_image(input_image,transcription, output_image)
 
         self.make_report()
@@ -132,6 +174,48 @@ class MeetingFacilitator():
                           date=self.date, attendants=self.attendants)
 
         transcription = self.process_transcriptions()
+        transcription = """
+Thank you everyone for coming here, my name is Manuel, and I have  the humongous pleasure to present to you, for the first time ever, pyramidman. This is a story about civilization, about evolution, but before we proceed.
+        
+I am sorry already because I am going to radically change your perception of pyramids. But before we introduce what pyramidman is all about, lets think for a second what do pyramids represent in society. Pyramids represent civilization, they represent structure, and most importantly, they represent hierarchy. From Mathematics to Humanities. Going through Gastronomy and Society structures. From Religion to World Domination. Ok, those two are very similar, I could have just said religion. And last but not least, the backbone of our Economic system, pyramid schemes.
+        
+As we all know, humankind has gone a long way. From the banana tree monkey to the computer monkey. Well diversity has grown a bit, there are two types of computer monkey, Office package monkey and programming monkey. In the early stages, we lived in hunter-gatherer societies. Every individual contributed with their hard skills equally, with hands on skills such as hunting, cooking, nursing…
+
+Over time, as groups grew in size, more complex civilizations appeared, which allowed for specialization of jobs that had not to so much with surviving.
+People created well defined Gods and huge infrastructures to please them. But there was another element that is missing from this picture which connected the Populus and the Gods.
+
+The element that made people work like slaves to build the pyramids. Was it belief? Nope, it was middle management. Throughout the ages, the labour became less about physical work and more about mental capabilities. And the middle management evolved accordingly.
+
+Becoming what we see today, a two sided individual that looks cool to the team 
+while reporting everything upstarts and making sure the executive boards plans are carried out, waterfall style.
+
+What is the next step? Well, if it wasn’t obvious yet, the next step is pyramidman. pyramidman stands for python robot advisor for middle management. Like any other sotfware, It is just a “tool” to enhance and increase the effectivity of a given sector, in this case middle management.
+Completely not intended to replace them in the long run.  
+
+pyramidman is an AI powered middle management tool based on the latest technologies that we all perfectly understand: Python, Deep learning and Blockchain.
+
+Lets have a look at its features. Starting by minutes taking, pyramidman listens to the conversation, and writes it down. At the end of the meeting: It makes a summary and sends it by email. When it listens the magic words.
+
+pyramidman also does meeting facilitation, it sparks the conversation towards value creation. It waits for silences and asks the right questions (every time): How does it scale? Are we asking the right questions? How do we measure success? Is this aligned with our customer journey? Can we take a step back? Are we conflating two different issues here?
+
+pyramidman has programmable voice commands. Forget about Alexa and Google who monitor you and analyze everything you say 24/7. And they can only tell you the weather and play music. With pyramidman you can customize your own voice commands. i.e: pyramidman facilitate meeting
+
+pyramidman also does business talk translation, keep up with the latest business slang.  There is so much potential here means You guys did an awful job and that is why you need us. As per my last email is read the fuck*** thread
+Our strategy is to increase our revenue streams and cut down our costs. We have no idea why benefits are down, some people might get fired. Thank you for your input, we will take it into account. Shut up and look pretty We leverage on the opportunities of market arbitrage. We take advantage of poorer countries.  Leveraging versatile skills in analytics, statistics, business, and economics for data driven insights is Bullshit.
+
+pyramidman is your own business advisor, walking you through ten cases.
+Pretty much like AI dungeon with business baby steps. 
+
+pyramidman includes innovation mode a.k.a brainstorming. Store all the ideas in the cloud using Blockchain with your company copyright. Optional:  Online bot that will track the original owner for life. If they developed on an idea remotely close, it prepares an automatic lawsuit.
+
+pyramidman detects its own sentences and assigns pyramid-points to the speakers. Handy when you need to promote some employee. Failing upwards had never been this easy!
+
+is this a joke? Why did you spend so much time on this stupid presentation? Well maybe, or maybe... is this a github repo? Recording studio? And most importantly, is it on right now? pyramidman facilitate.
+
+Well, this presentation is almost over and as I said, pyramidman sends an email at the end of the meeting when it hears the magic words. Who wants coffee?
+
+        """
+
         papyrus.set_transcription(transcription)
         papyrus.word_cloud_image_path = self.reports_folder + "word_cloud.jpg"
         papyrus.create_document(self.reports_folder + "report.docx")

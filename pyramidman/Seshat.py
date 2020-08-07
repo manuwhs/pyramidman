@@ -12,6 +12,8 @@ from .unwrapper import unwrap
 from .signal_processing import butter_highpass_filter
 from .subprocess import call_subprocess
 import numpy as np
+
+
 #import ray
 
 # ray.init()
@@ -124,8 +126,16 @@ class Transcriber:
 
     def set_automatic_default_transcribing_variables(self):
         # Set everything automatically
-        args = DeepSpeechArgs()
-        def transcriber(x): return transcribe(args, x)
+        if True:
+            args = DeepSpeechArgs()
+            def transcriber(x): return transcribe(args, x)
+        else:
+            def transcriber(x): 
+                r = sr.Recognizer()
+                with sr.WavFile(x) as source:              # use "test.wav" as the audio source
+                    audio = r.record(source)     
+                return dict(sentence = r.recognize_sphinx(audio))
+
         self.transcriber = transcriber
 
     """ LISTENING METHODS """
